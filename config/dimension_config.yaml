@@ -1,39 +1,28 @@
-# Generic Dimension Configuration Framework
-# Supports: customer, product, location, supplier, employee, store, vendor, etc.
-# No code changes needed - just update this YAML file for new dimensions
-
 dimensions:
   customer:
     enabled: true
-    description: "Customer Master Dimension"
+    description: "Customer dimension from staging master and attribute files"
     source:
-      master_file: "stg_customer.csv"
-      hierarchy_file: "customer_member_hier.csv"
-      member_file: "customer_member.csv"
+      member_file: "stg_customer.csv"
+      hierarchy_file: null
       attribute_file: "stg_customer_attr.csv"
-      metadata_file: "customer_property_metadata.csv"
-      hier_metadata_file: "customer_hier.csv"
-    
+      metadata_file: null
     entity_keys:
-      entity_id_col: "MEMBER_ID"
-      entity_name_col: "MEMBER_NM"
-      entity_desc_col: "MEMBER_DESC"
-      parent_id_col: "PARENT_MEMBER_ID"
-      level_col: "LEVELNAME"
-      assoc_type_col: "MEMBER_ASSOC_TYPE_CD"
-    
+      entity_id_col: "CUSTOMER_ID"
+      parent_id_col: "CUSTOMER_TYPE_ID"
+      root_id_col: "ALL_CUSTOMERS_ID"
+      assoc_type_col: "HIERARCHY"
     master_column_mapping:
-      MEMBER_ID: "DIMENSION_ID"
-      MEMBER_NM: "DIMENSION_NM"
-      MEMBER_DESC: "DIMENSION_DESC"
-      LEVELNAME: "LEVELNAME"
-    
-    hierarchy_column_mapping:
-      MEMBER_ID: "MEMBER_ID"
-      PARENT_MEMBER_ID: "PARENT_MEMBER_ID"
-      VALID_FROM_DTTM: "VALID_FROM_DTTM"
-      VALID_TO_DTTM: "VALID_TO_DTTM"
-    
+      CUSTOMER_ID: "DIMENSION_ID"
+      CUSTOMER_NM: "DIMENSION_NM"
+      CUSTOMER_DESC: "DIMENSION_DESC"
+      HIERARCHY: "HIERARCHY"
+      ALL_CUSTOMERS_ID: "ALL_CUSTOMERS_ID"
+      ALL_CUSTOMERS_NM: "ALL_CUSTOMERS_NM"
+      ALL_CUSTOMERS_DESC: "ALL_CUSTOMERS_DESC"
+      CUSTOMER_TYPE_ID: "CUSTOMER_TYPE_ID"
+      CUSTOMER_TYPE_NM: "CUSTOMER_TYPE_NM"
+      CUSTOMER_TYPE_DESC: "CUSTOMER_TYPE_DESC"
     attribute_column_mapping:
       CUSTOMER_ID: "DIMENSION_ID"
       CUSTOMER_INTRODUCTION_DT: "INTRODUCTION_DT"
@@ -47,196 +36,16 @@ dimensions:
       COUNTRY: "COUNTRY"
       MIN_ORDER: "MIN_ORDER"
       ACCOUNT_FEE: "ACCOUNT_FEE"
-    
     date_columns:
-      - "VALID_FROM_DTTM"
-      - "VALID_TO_DTTM"
-      - "INTRODUCTION_DT"
-      - "DISCONTINUED_DT"
-    
-    date_format_input: "%d%b%Y"
-    date_format_output: "%Y-%m-%d %H:%M:%S"
-    
+      - "CUSTOMER_INTRODUCTION_DT"
+      - "CUSTOMER_DISCONTINUED_DT"
     sentinel_dates:
       "31DEC5999": "5999-12-31 00:00:00"
       "31DEC9999": "9999-12-31 00:00:00"
-    
     dedup_key:
       - "DIMENSION_ID"
-    
     output_files:
       dimension_dim: "customer_dim.csv"
       hierarchy_dim: "customer_hierarchy_dim.csv"
       metadata_dim: "customer_property_metadata_dim.csv"
       master_target: "customer_master_target.csv"
-
-  product:
-    enabled: true
-    description: "Product Master Dimension"
-    source:
-      master_file: "product_member.csv"
-      hierarchy_file: "product_member_hier.csv"
-      member_file: "product_member.csv"
-      attribute_file: "stg_product_attr.csv"
-      metadata_file: "product_property_metadata.csv"
-      hier_metadata_file: "product_hier.csv"
-    
-    entity_keys:
-      entity_id_col: "MEMBER_ID"
-      entity_name_col: "MEMBER_NM"
-      entity_desc_col: "MEMBER_DESC"
-      parent_id_col: "PARENT_MEMBER_ID"
-      level_col: "LEVELNAME"
-      assoc_type_col: "MEMBER_ASSOC_TYPE_CD"
-    
-    master_column_mapping:
-      MEMBER_ID: "DIMENSION_ID"
-      MEMBER_NM: "DIMENSION_NM"
-      MEMBER_DESC: "DIMENSION_DESC"
-      LEVELNAME: "LEVELNAME"
-    
-    hierarchy_column_mapping:
-      MEMBER_ID: "MEMBER_ID"
-      PARENT_MEMBER_ID: "PARENT_MEMBER_ID"
-      VALID_FROM_DTTM: "VALID_FROM_DTTM"
-      VALID_TO_DTTM: "VALID_TO_DTTM"
-    
-    attribute_column_mapping:
-      PRODUCT_ID: "DIMENSION_ID"
-      PRODUCT_INTRODUCTION_DT: "INTRODUCTION_DT"
-      PRODUCT_DISCONTINUED_DT: "DISCONTINUED_DT"
-      COST: "COST"
-      LIST_PRICE: "LIST_PRICE"
-      UOM: "UOM"
-      WEIGHT: "WEIGHT"
-      CATEGORY: "CATEGORY"
-      SUPPLIER_ID: "SUPPLIER_ID"
-    
-    date_columns:
-      - "VALID_FROM_DTTM"
-      - "VALID_TO_DTTM"
-      - "INTRODUCTION_DT"
-      - "DISCONTINUED_DT"
-    
-    date_format_input: "%d%b%Y"
-    date_format_output: "%Y-%m-%d %H:%M:%S"
-    
-    sentinel_dates:
-      "31DEC5999": "5999-12-31 00:00:00"
-      "31DEC9999": "9999-12-31 00:00:00"
-    
-    dedup_key:
-      - "DIMENSION_ID"
-    
-    output_files:
-      dimension_dim: "product_dim.csv"
-      hierarchy_dim: "product_hierarchy_dim.csv"
-      metadata_dim: "product_property_metadata_dim.csv"
-      master_target: "product_master_target.csv"
-
-  location:
-    enabled: true
-    description: "Location Master Dimension"
-    source:
-      master_file: "location_member.csv"
-      hierarchy_file: "location_member_hier.csv"
-      member_file: "location_member.csv"
-      attribute_file: "stg_location_attr.csv"
-      metadata_file: "location_property_metadata.csv"
-      hier_metadata_file: "location_hier.csv"
-    
-    entity_keys:
-      entity_id_col: "MEMBER_ID"
-      entity_name_col: "MEMBER_NM"
-      entity_desc_col: "MEMBER_DESC"
-      parent_id_col: "PARENT_MEMBER_ID"
-      level_col: "LEVELNAME"
-      assoc_type_col: "MEMBER_ASSOC_TYPE_CD"
-    
-    master_column_mapping:
-      MEMBER_ID: "DIMENSION_ID"
-      MEMBER_NM: "DIMENSION_NM"
-      MEMBER_DESC: "DIMENSION_DESC"
-      LEVELNAME: "LEVELNAME"
-    
-    hierarchy_column_mapping:
-      MEMBER_ID: "MEMBER_ID"
-      PARENT_MEMBER_ID: "PARENT_MEMBER_ID"
-      VALID_FROM_DTTM: "VALID_FROM_DTTM"
-      VALID_TO_DTTM: "VALID_TO_DTTM"
-    
-    attribute_column_mapping:
-      LOCATION_ID: "DIMENSION_ID"
-      LOCATION_INTRODUCTION_DT: "INTRODUCTION_DT"
-      LOCATION_DISCONTINUED_DT: "DISCONTINUED_DT"
-      ADDRESS: "ADDRESS"
-      CITY: "CITY"
-      STATE: "STATE"
-      ZIP_CODE: "ZIP_CODE"
-      COUNTRY: "COUNTRY"
-      LATITUDE: "LATITUDE"
-      LONGITUDE: "LONGITUDE"
-      REGION: "REGION"
-    
-    date_columns:
-      - "VALID_FROM_DTTM"
-      - "VALID_TO_DTTM"
-      - "INTRODUCTION_DT"
-      - "DISCONTINUED_DT"
-    
-    date_format_input: "%d%b%Y"
-    date_format_output: "%Y-%m-%d %H:%M:%S"
-    
-    sentinel_dates:
-      "31DEC5999": "5999-12-31 00:00:00"
-      "31DEC9999": "9999-12-31 00:00:00"
-    
-    dedup_key:
-      - "DIMENSION_ID"
-    
-    output_files:
-      dimension_dim: "location_dim.csv"
-      hierarchy_dim: "location_hierarchy_dim.csv"
-      metadata_dim: "location_property_metadata_dim.csv"
-      master_target: "location_master_target.csv"
-
-  supplier:
-    enabled: false
-    description: "Supplier Master Dimension"
-    source:
-      master_file: "supplier_member.csv"
-      hierarchy_file: "supplier_member_hier.csv"
-      member_file: "supplier_member.csv"
-      attribute_file: "stg_supplier_attr.csv"
-      metadata_file: "supplier_property_metadata.csv"
-      hier_metadata_file: "supplier_hier.csv"
-    
-    entity_keys:
-      entity_id_col: "MEMBER_ID"
-      entity_name_col: "MEMBER_NM"
-      entity_desc_col: "MEMBER_DESC"
-      parent_id_col: "PARENT_MEMBER_ID"
-      level_col: "LEVELNAME"
-      assoc_type_col: "MEMBER_ASSOC_TYPE_CD"
-    
-    master_column_mapping:
-      MEMBER_ID: "DIMENSION_ID"
-      MEMBER_NM: "DIMENSION_NM"
-      MEMBER_DESC: "DIMENSION_DESC"
-      LEVELNAME: "LEVELNAME"
-    
-    date_columns:
-      - "VALID_FROM_DTTM"
-      - "VALID_TO_DTTM"
-    
-    date_format_input: "%d%b%Y"
-    date_format_output: "%Y-%m-%d %H:%M:%S"
-    
-    dedup_key:
-      - "DIMENSION_ID"
-    
-    output_files:
-      dimension_dim: "supplier_dim.csv"
-      hierarchy_dim: "supplier_hierarchy_dim.csv"
-      metadata_dim: "supplier_property_metadata_dim.csv"
-      master_target: "supplier_master_target.csv"
