@@ -1,28 +1,31 @@
 dimensions:
   customer:
     enabled: true
-    description: "Customer dimension from staging master and attribute files"
+    description: "Customer dimension synthesized from staging files"
     source:
       member_file: "stg_customer.csv"
       hierarchy_file: null
       attribute_file: "stg_customer_attr.csv"
       metadata_file: null
+    
     entity_keys:
       entity_id_col: "CUSTOMER_ID"
       parent_id_col: "CUSTOMER_TYPE_ID"
       root_id_col: "ALL_CUSTOMERS_ID"
       assoc_type_col: "HIERARCHY"
+    
     master_column_mapping:
       CUSTOMER_ID: "DIMENSION_ID"
       CUSTOMER_NM: "DIMENSION_NM"
       CUSTOMER_DESC: "DIMENSION_DESC"
       HIERARCHY: "HIERARCHY"
-      ALL_CUSTOMERS_ID: "ALL_CUSTOMERS_ID"
-      ALL_CUSTOMERS_NM: "ALL_CUSTOMERS_NM"
-      ALL_CUSTOMERS_DESC: "ALL_CUSTOMERS_DESC"
-      CUSTOMER_TYPE_ID: "CUSTOMER_TYPE_ID"
-      CUSTOMER_TYPE_NM: "CUSTOMER_TYPE_NM"
-      CUSTOMER_TYPE_DESC: "CUSTOMER_TYPE_DESC"
+    
+    hierarchy_column_mapping:
+      CUSTOMER_ID: "MEMBER_ID"
+      CUSTOMER_TYPE_ID: "PARENT_MEMBER_ID"
+      HIERARCHY: "MEMBER_ASSOC_TYPE_CD"
+      ALL_CUSTOMERS_ID: "DEFAULT_MEMBER_ID"
+    
     attribute_column_mapping:
       CUSTOMER_ID: "DIMENSION_ID"
       CUSTOMER_INTRODUCTION_DT: "INTRODUCTION_DT"
@@ -36,16 +39,26 @@ dimensions:
       COUNTRY: "COUNTRY"
       MIN_ORDER: "MIN_ORDER"
       ACCOUNT_FEE: "ACCOUNT_FEE"
+    
     date_columns:
       - "CUSTOMER_INTRODUCTION_DT"
       - "CUSTOMER_DISCONTINUED_DT"
+    
     sentinel_dates:
       "31DEC5999": "5999-12-31 00:00:00"
       "31DEC9999": "9999-12-31 00:00:00"
+    
     dedup_key:
       - "DIMENSION_ID"
+    
     output_files:
       dimension_dim: "customer_dim.csv"
       hierarchy_dim: "customer_hierarchy_dim.csv"
       metadata_dim: "customer_property_metadata_dim.csv"
       master_target: "customer_master_target.csv"
+  
+  product:
+    enabled: false
+  
+  location:
+    enabled: false
